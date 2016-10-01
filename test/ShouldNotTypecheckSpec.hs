@@ -63,7 +63,7 @@ data NoNFDataInstance = NoNFDataInstance
 
 main :: IO ()
 main = hspec $ do
-  describe "shouldNotCompile" $ do
+  describe "shouldNotTypecheck" $ do
     it "should not throw an assertion error when an expression is ill typed" $ do
       shouldNotTypecheck ("foo" :: Int)
 
@@ -83,3 +83,13 @@ main = hspec $ do
 
     it "should warn if an expression had a type error due to lack of NFData instance" $ do
       shouldFailAssertion (shouldNotTypecheck NoNFDataInstance)
+
+  describe "shouldNotTypecheckWith" $ do
+    it "passes if the given string can be found in the error message" $ do
+      shouldNotTypecheckWith "Couldn't match expected type ‘Bool’ with actual type ‘()’"
+        (not ())
+
+    it "throws an exception if the given string is not found in the error message" $ do
+      shouldFailAssertion $
+        shouldNotTypecheckWith "foo"
+          (not ())
