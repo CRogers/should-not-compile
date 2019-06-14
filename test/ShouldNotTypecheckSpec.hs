@@ -5,7 +5,6 @@ module Main where
 
 import Control.DeepSeq
 import Control.Exception
-import Data.List (isInfixOf)
 import GHC.Generics (Generic)
 import Test.Hspec
 import Test.Hspec.Expectations (expectationFailure)
@@ -64,7 +63,7 @@ data NoNFDataInstance = NoNFDataInstance
 
 main :: IO ()
 main = hspec $ do
-  describe "shouldNotTypecheck" $ do
+  describe "shouldNotCompile" $ do
     it "should not throw an assertion error when an expression is ill typed" $ do
       shouldNotTypecheck ("foo" :: Int)
 
@@ -84,40 +83,3 @@ main = hspec $ do
 
     it "should warn if an expression had a type error due to lack of NFData instance" $ do
       shouldFailAssertion (shouldNotTypecheck NoNFDataInstance)
-
-
-  describe "shouldNotTypecheckWith" $ do
-     it "passes if the given string can be found in the error message" $ do
-       shouldNotTypecheckWith "Couldn't match expected type"
-         (not ())
-
-     it "throws an exception if the given string is not found in the error message" $ do
-       shouldFailAssertion $
-         shouldNotTypecheckWith "foo"
-           (not ())
-
-  describe "shouldNotTypecheckSatisfying" $ do
-     it "passes if the predicate passes" $ do
-       shouldNotTypecheckSatisfying
-         (\msg -> isInfixOf "Couldn't match expected type" msg
-               && isInfixOf "Bool" msg
-               && isInfixOf "with actual type" msg
-               && isInfixOf "()" msg
-         )
-         (not ())
-
-     it "passes if the predicate always passes" $ do
-       shouldNotTypecheckSatisfying (const True)
-         (not ())
-
-     it "throws an exception if predicate fails" $ do
-       shouldFailAssertion $
-         shouldNotTypecheckSatisfying ((== 5) . length)
-           (not ())
-
-     it "throws an exception if predicate always fails" $ do
-       shouldFailAssertion $
-         shouldNotTypecheckSatisfying (const False)
-           (not ())
-
-
