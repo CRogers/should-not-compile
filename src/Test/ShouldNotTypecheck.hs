@@ -44,7 +44,7 @@ shouldNotTypecheckSatisfying predicate a = do
 
 {-|
    Like 'shouldNotTypecheck', but ensures that the given substring appears in
-   the reuslting type error.
+   the resulting type error.
 -}
 shouldNotTypecheckWith :: NFData a => String -> DeferredType(a) -> Assertion
 shouldNotTypecheckWith substring = shouldNotTypecheckSatisfying (isInfixOf substring)
