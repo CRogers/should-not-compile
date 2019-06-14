@@ -50,15 +50,14 @@ shouldNotTypecheckWith substring a = do
 
 
 {-|
-  In GHC-8.0.0+, type errors contain a context which describes where the error
-  message was thrown from. This will include the call to 'shouldNotTypecheckWith',
-  which unless handled, would cause 'shouldNotTypecheckWith' to always succeed.
-  This function strips off the context from the error messages.
+  In some versions of GHC, type errors contain a context which describes where
+  the error message was thrown from. This will include the call to
+  'shouldNotTypecheckWith', which unless handled, would cause
+  'shouldNotTypecheckWith' to always succeed.  This function strips off the
+  context from the error messages.
 -}
 stripContext :: String -> String
-#if __GLASGOW_HASKELL__ >= 800
-stripContext = unlines . takeWhile (not . isPrefixOf "• In the " . dropWhile isSpace) . lines
-#else
-stripContext = id
-#endif
+stripContext = unlines
+             . takeWhile (not . isPrefixOf "In the " . dropWhile (\x -> isSpace x || x == '•'))
+             . lines
 
